@@ -7,8 +7,8 @@ import bs4
 
 isin_urls = {
     "analizy.pl": {
-        "ISIN1": "https://www.analizy.pl/fundusze-inwestycyjne-otwarte/ALL90/allianz-dochodowy-income-and-growth",
-        "ISIN2": "https://www.analizy.pl/fundusze-inwestycyjne-otwarte/PCS87E/pko-zabezpieczenia-emerytalnego-2070-e",
+        "ISIN1": "https://www.analizy.pl/fundusze-inwestycyjne-otwarte/ALL90/allianz-dochodowy-income-and-growth",  # noqa: E501
+        "ISIN2": "https://www.analizy.pl/fundusze-inwestycyjne-otwarte/PCS87E/pko-zabezpieczenia-emerytalnego-2070-e",  # noqa: E501
     }
 }
 
