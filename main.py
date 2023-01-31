@@ -1,18 +1,14 @@
 import requests
 import bs4
+import funds
 
 # TODO
 # - add another page interface
-# - add logging errors/info
+# - add logging errors/info, see exception handling in Web Scraping with Python
+# - add pytest with mocks to requests.get, bs4.BeatutifulSoup, soup.find
 
-isin_urls = {
-    "analizy.pl": {
-        "ISIN1": "https://www.analizy.pl/fundusze-inwestycyjne-otwarte/ALL90/allianz-dochodowy-income-and-growth",  # noqa: E501
-        "ISIN2": "https://www.analizy.pl/fundusze-inwestycyjne-otwarte/PCS87E/pko-zabezpieczenia-emerytalnego-2070-e",  # noqa: E501
-    }
-}
 
-sel = isin_urls['analizy.pl']
+sel = funds.funds_urls['analizy.pl']
 for isin in sel.keys():
     resp = requests.get(sel[isin])
     soup = bs4.BeautifulSoup(resp.content, "html.parser")
