@@ -1,0 +1,5 @@
+[flake8]
+per-file-ignores =
+    # Ignore long URL lines
+    funds.py: E501
+    funds_prv.py: E501
