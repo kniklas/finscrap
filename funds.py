@@ -1,7 +1,19 @@
 funds_urls = {
     "analizy.pl": {
         "I01": "https://www.analizy.pl/fundusze-inwestycyjne-otwarte/ALL90/allianz-dochodowy-income-and-growth",
-        "I02": "https://www.analizy.pl/fundusze-zagraniczne/SIS021_A1_PLN/schroder-isf-euro-equity-a1-acc-hedged-pln",
-        "I03": "https://www.analizy.pl/fundusze-zagraniczne/BGF079_A2H_PLN/blackrock-gf-global-equity-income-a2-hedged-pln"
+    },
+    "biznesradar.pl": {
+        "PLALIOR00169": "https://www.biznesradar.pl/notowania/ALR0524",
+        "PL0000107454": "https://www.biznesradar.pl/notowania/WZ0124",
+        "PL0000108817": "https://www.biznesradar.pl/notowania/WZ0126",
+        "PLJSW0000015": "https://www.biznesradar.pl/notowania/JSW-JASTRZEBSKA-SPOLKA-WEGLOWA",
+    },
+    "borsa": {
+        "IE00B3T9LM79": "https://www.borsaitaliana.it/borsa/etf/scheda/IE00B3T9LM79.html?lang=en",
+        "IE00B66F4759": "https://www.borsaitaliana.it/borsa/etf/scheda/IE00B66F4759.html?lang=en",
+    },
+    "ishares": {
+        "US4642885135": "https://www.ishares.com/us/products/239565/ishares-iboxx-high-yield-corporate-bond-etf",
+        "US4642872422": "https://www.ishares.com/us/products/239566/ishares-iboxx-investment-grade-corporate-bond-etf",
     }
 }
