@@ -18,7 +18,7 @@ from urllib.error import URLError
 # - calculate requirements for DB size
 
 
-class GetAsset():
+class GetAsset:
     def __init__(self, site):
         self.sel = funds.funds_urls[site]
         print(f"Initialize: {site}")
@@ -26,7 +26,7 @@ class GetAsset():
     def get_element(self, soup, tag, class_id):
         d = soup.find(tag, class_id)
         if d is None:
-            raise AttributeError(f'Incorrect <{tag}> or class=\'{class_id}\'')
+            raise AttributeError(f"Incorrect <{tag}> or class='{class_id}'")
         return d
 
     def get_data(self):
@@ -36,10 +36,10 @@ class GetAsset():
                 req = request.Request(self.sel[isin])
                 urlopen(self.sel[isin])
             except HTTPError as e:
-                print(f'{e} | Verify if URL is correct: {req.full_url}')
+                print(f"{e} | Verify if URL is correct: {req.full_url}")
                 date, price = None, None
             except URLError as e:
-                print(f'{e} | Verify if domain name is correct: {req.host}')
+                print(f"{e} | Verify if domain name is correct: {req.host}")
                 date, price = None, None
             else:
                 resp = requests.get(self.sel[isin])
@@ -47,13 +47,13 @@ class GetAsset():
                 try:
                     date = self.get_date(soup)
                 except (AttributeError, TypeError) as e:
-                    print(f'Cannot extract date from {req.full_url} - {e}')
+                    print(f"Cannot extract date from {req.full_url} - {e}")
                     date = None
 
                 try:
                     price = self.get_price(soup)
                 except (AttributeError, TypeError) as e:
-                    print(f'Cannot extract price from: {req.full_url} - {e} -')
+                    print(f"Cannot extract price from: {req.full_url} - {e} -")
                     price = None
 
                 print(f"{isin},{date},{price}")
@@ -129,14 +129,14 @@ class GetAssetIShares(GetAsset):
         return p.text[2:].strip()
 
 
-analizy = GetAssetAnalizy('analizy.pl')
+analizy = GetAssetAnalizy("analizy.pl")
 analizy.get_data()
 
-biznesr = GetAssetBiznesR('biznesradar.pl')
+biznesr = GetAssetBiznesR("biznesradar.pl")
 biznesr.get_data()
 
-borsa = GetAssetBorsa('borsa')
+borsa = GetAssetBorsa("borsa")
 borsa.get_data()
 
-ishares = GetAssetIShares('ishares')
+ishares = GetAssetIShares("ishares")
 ishares.get_data()

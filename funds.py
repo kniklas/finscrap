@@ -15,5 +15,5 @@ funds_urls = {
     "ishares": {
         "US4642885135": "https://www.ishares.com/us/products/239565/ishares-iboxx-high-yield-corporate-bond-etf",
         "US4642872422": "https://www.ishares.com/us/products/239566/ishares-iboxx-investment-grade-corporate-bond-etf",
-    }
+    },
 }
