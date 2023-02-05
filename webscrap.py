@@ -127,16 +127,3 @@ class GetAssetIShares(GetAsset):
     def get_price(self, soup):
         p = super().get_element(soup, self.price_tag, self.price_class)
         return p.text[2:].strip()
-
-
-analizy = GetAssetAnalizy("analizy.pl")
-analizy.get_data()
-
-biznesr = GetAssetBiznesR("biznesradar.pl")
-biznesr.get_data()
-
-borsa = GetAssetBorsa("borsa")
-borsa.get_data()
-
-ishares = GetAssetIShares("ishares")
-ishares.get_data()
