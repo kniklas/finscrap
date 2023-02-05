@@ -6,17 +6,6 @@ from urllib.request import urlopen
 from urllib.error import HTTPError
 from urllib.error import URLError
 
-# TODO
-# - add pytest with mocks to requests, test parsing/formatting data, dict, etc.
-# - make sure date is stored/parsed in same format
-# - add GitHub actions, pre-commit
-# - put logic in python module (public) with documented support of fin webs
-# - add logging (as option for the package?)
-
-# TODO (later)
-# - add method to retrieve NBP currency rates
-# - calculate requirements for DB size
-
 
 class GetAsset:
     def __init__(self, site):
