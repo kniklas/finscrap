@@ -2,7 +2,6 @@ import requests
 import bs4
 import funds as funds
 from urllib import request
-from urllib.request import urlopen
 from urllib.error import HTTPError
 from urllib.error import URLError
 
@@ -23,7 +22,7 @@ class GetAsset:
         for isin in self.sel.keys():
             try:
                 req = request.Request(self.sel[isin])
-                urlopen(self.sel[isin])
+                request.urlopen(self.sel[isin])
             except HTTPError as e:
                 print(f"{e} | Verify if URL is correct: {req.full_url}")
                 date, price = None, None
@@ -42,7 +41,7 @@ class GetAsset:
                 try:
                     price = self.get_price(soup)
                 except (AttributeError, TypeError) as e:
-                    print(f"Cannot extract price from: {req.full_url} - {e} -")
+                    print(f"Cannot extract price from: {req.full_url} - {e}")
                     price = None
 
                 print(f"{isin},{date},{price}")
