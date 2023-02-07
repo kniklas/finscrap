@@ -2,6 +2,7 @@ import pytest
 import requests
 import bs4
 from urllib import request
+
 #  from unittest.mock import patch
 
 import webscrap
@@ -22,9 +23,8 @@ ANALIZY_PL_bad_date_class = """
 """
 
 # TODO
-# - HTTPError and URLError
-# - get_element() catch errors with incorrect tag or class_id - AttributeError
-# - confirm scenarios where date or price == None
+# - extract correct tags/class configuration to variables in test
+# - add test coverage
 
 
 class DummySoup(bs4.BeautifulSoup):
@@ -75,7 +75,36 @@ def test_get_data(mocker, analizy_web, html, expected_result):
     mocker.patch.object(request, "urlopen", return_value="urlopen web res")
     mocker.patch.object(request, "Request", return_value=DummyRequest())
     mocker.patch.object(requests, "get", return_value=DummyRequestGet())
-    mocker.patch.object(bs4, "BeautifulSoup",
-                        return_value=DummySoup(html))
+    mocker.patch.object(bs4, "BeautifulSoup", return_value=DummySoup(html))
     result = analizy_web.get_data()
     assert result == expected_result
+
+
+@pytest.mark.parametrize(
+    "html, tag, id_",
+    (
+        (ANALIZY_PL_bad_price_class, "p", "lightProductText"),
+        (ANALIZY_PL_bad_date_class, "span", "productBigText"),
+    ),
+)
+def test_get_element_exception(analizy_web, html, tag, id_):
+    with pytest.raises(AttributeError):
+        soup = bs4.BeautifulSoup(html, "lxml")
+        analizy_web.get_element(soup, tag, id_)
+
+
+# TODO: consider if this is not duplicate of test_get_data()
+@pytest.mark.parametrize(
+    "tag, id_, expected_result",
+    (
+        ("p", "lightProductText", '<p class="lightProductText">12.2</p>'),
+        (
+            "span",
+            "productBigText",
+            '<span class="productBigText">2022-12-01</span>',
+        ),
+    ),
+)
+def test_get_element_found(analizy_web, tag, id_, expected_result):
+    soup = bs4.BeautifulSoup(ANALIZY_PL, "lxml")
+    assert str(analizy_web.get_element(soup, tag, id_)) == expected_result
