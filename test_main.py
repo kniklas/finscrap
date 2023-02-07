@@ -23,7 +23,10 @@ ANALIZY_PL_bad_date_class = """
 """
 
 # TODO
-# - extract correct tags/class configuration to variables in test
+# - test HTTPError and URLError (mock exception in request.urlopen() and verify
+# if date and price have value of None, None
+# - extract correct tags/class configuration to variables in test / parametrize
+# test data
 # - add test coverage
 
 
@@ -75,6 +78,7 @@ def test_get_data(mocker, analizy_web, html, expected_result):
     mocker.patch.object(request, "urlopen", return_value="urlopen web res")
     mocker.patch.object(request, "Request", return_value=DummyRequest())
     mocker.patch.object(requests, "get", return_value=DummyRequestGet())
+    # TODO: can above 3 line be part of fixture? / CHECK /
     mocker.patch.object(bs4, "BeautifulSoup", return_value=DummySoup(html))
     result = analizy_web.get_data()
     assert result == expected_result
