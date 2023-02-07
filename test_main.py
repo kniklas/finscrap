@@ -22,12 +22,12 @@ class DummySoup(bs4.BeautifulSoup):
         super().__init__(ANALIZY_PL, "lxml")
 
 
-class DummyRequestGet():
+class DummyRequestGet:
     def __init__(self):
         self.content = "Request Get Dummy content"
 
 
-class DummyRequest():
+class DummyRequest:
     def __init__(self):
         self.full_url = "http://dummy-url.com/somepage.html"
         self.host = "dummy-url.com"
@@ -57,7 +57,8 @@ def test_biznesradar_pl_initialisation(biznesradar_web):
 @patch.object(request, "urlopen", return_value="urlopen Web Response")
 @patch.object(requests, "get", return_value=DummyRequestGet())
 @patch.object(bs4, "BeautifulSoup", return_value=DummySoup())
-def test_analizy_get_data(mock_Request, mock_urlopen, mock_get,
-                          mock_BeautifulSoup, analizy_web):
+def test_analizy_get_data(
+    mock_Request, mock_urlopen, mock_get, mock_BeautifulSoup, analizy_web
+):
     result = analizy_web.get_data()
-    assert result == {'I01': ('12.2', '2022-12-01')}
+    assert result == {"I01": ("12.2", "2022-12-01")}

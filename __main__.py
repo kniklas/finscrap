@@ -1,5 +1,6 @@
 if __name__ == "__main__":
     import webscrap
+
     print("LOADING")
 
     analizy = webscrap.GetAssetAnalizy("analizy.pl")
