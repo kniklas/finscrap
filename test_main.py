@@ -1,7 +1,10 @@
 import pytest
 import requests
 import bs4
+import urllib
 from urllib import request
+from urllib.error import HTTPError
+from urllib.error import URLError
 
 #  from unittest.mock import patch
 
@@ -46,6 +49,18 @@ class DummyRequest:
         self.host = "dummy-url.com"
 
 
+# TODO: CONSIDER REMOVING / REFACTORING (duplicate?)
+class DummyURLLibRequestHTTPError:
+    def __init__(self):
+        super().__init__()
+        print("initiate HTTP Error class object")
+
+    @staticmethod
+    def urlopen():
+        print("request.urlopen - raise HTTPError")
+        raise HTTPError("URL", 404, "Not found", None, None)
+
+
 @pytest.fixture(name="analizy_web")
 def fixture_analizy_web():
     analizy_web = webscrap.GetAssetAnalizy("analizy.pl")
@@ -66,6 +81,7 @@ def test_biznesradar_pl_initialisation(biznesradar_web):
     assert biznesradar_web
 
 
+#  @pytest.mark.skip
 @pytest.mark.parametrize(
     "html, expected_result",
     (
@@ -82,6 +98,32 @@ def test_get_data(mocker, analizy_web, html, expected_result):
     mocker.patch.object(bs4, "BeautifulSoup", return_value=DummySoup(html))
     result = analizy_web.get_data()
     assert result == expected_result
+
+
+class ERO:
+    @staticmethod
+    def urlopen():
+        print("Raise URL/HTTPError")
+        #  raise ValueError
+        #  raise HTTPError("URL", 404, "Not found", None, None)
+        raise URLError("missing url")
+
+
+# TODO
+# - check if above static method can be simple method
+# - add HTTPError handling/testing.
+def test_get_data_raise_exception(mocker, analizy_web):
+    mocker.patch.object(
+        urllib.request,
+        "urlopen",
+        side_effect=URLError("BAD URL"),
+    )
+    mocker.patch.object(request, "Request", return_value=DummyRequest())
+    mocker.patch.object(requests, "get", return_value=DummyRequestGet())
+    mocker.patch.object(bs4, "BeautifulSoup", return_value=DummySoup(""))
+    result = analizy_web.get_data()
+    #  print(result)
+    assert result == {"I01": (None, None)}
 
 
 @pytest.mark.parametrize(

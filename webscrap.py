@@ -21,7 +21,9 @@ class GetAsset:
         d = dict()
         for isin in self.sel.keys():
             try:
+                # Required to get URL or hostname in error handling
                 req = request.Request(self.sel[isin])
+                # Catching actual exception
                 request.urlopen(self.sel[isin])
             except HTTPError as e:
                 print(f"{e} | Verify if URL is correct: {req.full_url}")
@@ -45,7 +47,7 @@ class GetAsset:
                     price = None
 
                 print(f"{isin},{date},{price}")
-                d[isin] = (date, price)
+            d[isin] = (date, price)
         return d
 
 
