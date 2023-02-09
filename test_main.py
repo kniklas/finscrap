@@ -6,9 +6,9 @@ from urllib import request
 from urllib.error import HTTPError
 from urllib.error import URLError
 
-#  from unittest.mock import patch
 
 import webscrap
+
 
 ANALIZY_PL = """
 <p class=\'lightProductText\'>12.2</p>
@@ -25,11 +25,17 @@ ANALIZY_PL_bad_date_class = """
 <span class=\'productBigText2\'>2022-12-01</span>
 """
 
+ANALIZY_PL_bad_price_tag = """
+<l class=\'lightProductText\'>12.2</l>
+<span class=\'productBigText2\'>2022-12-01</span>
+"""
+
+ANALIZY_PL_bad_date_tag = """
+<p class=\'lightProductText\'>12.2</p>
+<div class=\'productBigText2\'>2022-12-01</div>
+"""
+
 # TODO
-# - test HTTPError and URLError (mock exception in request.urlopen() and verify
-# if date and price have value of None, None
-# - extract correct tags/class configuration to variables in test / parametrize
-# test data
 # - add test coverage
 
 
@@ -43,48 +49,25 @@ class DummyRequestGet:
         self.content = "Request Get Dummy content"
 
 
-class DummyRequest:
-    def __init__(self):
-        self.full_url = "http://dummy-url.com/somepage.html"
-        self.host = "dummy-url.com"
-
-
 @pytest.fixture(name="analizy_web")
 def fixture_analizy_web():
     analizy_web = webscrap.GetAssetAnalizy("analizy.pl")
     yield analizy_web
 
 
-@pytest.fixture(name="biznesradar_web")
-def fixture_biznesradar_web():
+def test_biznesradar_pl_initialisation():
     biznesradar_web = webscrap.GetAssetAnalizy("biznesradar.pl")
-    yield biznesradar_web
-
-
-def test_analizy_pl_initialisation(analizy_web):
-    assert analizy_web
-
-
-def test_biznesradar_pl_initialisation(biznesradar_web):
     assert biznesradar_web
 
 
-@pytest.mark.parametrize(
-    "html, expected_result",
-    (
-        (ANALIZY_PL, {"I01": ("12.2", "2022-12-01")}),
-        (ANALIZY_PL_bad_price_class, {"I01": (None, "2022-12-01")}),
-        (ANALIZY_PL_bad_date_class, {"I01": ("12.2", None)}),
-    ),
-)
-def test_get_data(mocker, analizy_web, html, expected_result):
-    mocker.patch.object(request, "urlopen", return_value="urlopen web res")
-    mocker.patch.object(request, "Request", return_value=DummyRequest())
-    mocker.patch.object(requests, "get", return_value=DummyRequestGet())
-    # TODO: can above 3 line be part of fixture? / CHECK /
-    mocker.patch.object(bs4, "BeautifulSoup", return_value=DummySoup(html))
-    result = analizy_web.get_data()
-    assert result == expected_result
+def test_borsa_initialisation():
+    borsa_web = webscrap.GetAssetAnalizy("borsa")
+    assert borsa_web
+
+
+def test_ishares_initialisation():
+    ishares_web = webscrap.GetAssetAnalizy("ishares")
+    assert ishares_web
 
 
 def test_get_data_raise_URLError(mocker, analizy_web):
@@ -93,9 +76,6 @@ def test_get_data_raise_URLError(mocker, analizy_web):
         "urlopen",
         side_effect=URLError("BAD URL"),
     )
-    mocker.patch.object(request, "Request", return_value=DummyRequest())
-    mocker.patch.object(requests, "get", return_value=DummyRequestGet())
-    mocker.patch.object(bs4, "BeautifulSoup", return_value=DummySoup(""))
     result = analizy_web.get_data()
     assert result == {"I01": (None, None)}
 
@@ -106,24 +86,43 @@ def test_get_data_raise_HTTPError(mocker, analizy_web):
         "urlopen",
         side_effect=HTTPError("OJ!", 404, "aa", None, None),
     )
-    mocker.patch.object(request, "Request", return_value=DummyRequest())
-    mocker.patch.object(requests, "get", return_value=DummyRequestGet())
-    mocker.patch.object(bs4, "BeautifulSoup", return_value=DummySoup(""))
     result = analizy_web.get_data()
     assert result == {"I01": (None, None)}
+
+
+def test_analizy_pl_initialisation(analizy_web):
+    assert analizy_web
 
 
 @pytest.mark.parametrize(
     "html, tag, id_",
     (
         (ANALIZY_PL_bad_price_class, "p", "lightProductText"),
+        (ANALIZY_PL_bad_price_tag, "p", "lightProductText"),
         (ANALIZY_PL_bad_date_class, "span", "productBigText"),
+        (ANALIZY_PL_bad_date_tag, "span", "productBigText"),
     ),
 )
 def test_analizy_get_element_exception(analizy_web, html, tag, id_):
     with pytest.raises(AttributeError):
         soup = bs4.BeautifulSoup(html, "lxml")
         analizy_web.get_element(soup, tag, id_)
+
+
+@pytest.mark.parametrize(
+    "html, expected_result",
+    (
+        (ANALIZY_PL, {"I01": ("12.2", "2022-12-01")}),
+        (ANALIZY_PL_bad_price_class, {"I01": (None, "2022-12-01")}),
+        (ANALIZY_PL_bad_date_class, {"I01": ("12.2", None)}),
+    ),
+)
+def test_analizy_get_data(mocker, analizy_web, html, expected_result):
+    mocker.patch.object(request, "urlopen", return_value="urlopen web res")
+    mocker.patch.object(requests, "get", return_value=DummyRequestGet())
+    mocker.patch.object(bs4, "BeautifulSoup", return_value=DummySoup(html))
+    result = analizy_web.get_data()
+    assert result == expected_result
 
 
 # TODO: consider if this is not duplicate of test_get_data()
