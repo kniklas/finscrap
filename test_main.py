@@ -49,18 +49,6 @@ class DummyRequest:
         self.host = "dummy-url.com"
 
 
-# TODO: CONSIDER REMOVING / REFACTORING (duplicate?)
-class DummyURLLibRequestHTTPError:
-    def __init__(self):
-        super().__init__()
-        print("initiate HTTP Error class object")
-
-    @staticmethod
-    def urlopen():
-        print("request.urlopen - raise HTTPError")
-        raise HTTPError("URL", 404, "Not found", None, None)
-
-
 @pytest.fixture(name="analizy_web")
 def fixture_analizy_web():
     analizy_web = webscrap.GetAssetAnalizy("analizy.pl")
@@ -81,7 +69,6 @@ def test_biznesradar_pl_initialisation(biznesradar_web):
     assert biznesradar_web
 
 
-#  @pytest.mark.skip
 @pytest.mark.parametrize(
     "html, expected_result",
     (
@@ -100,19 +87,7 @@ def test_get_data(mocker, analizy_web, html, expected_result):
     assert result == expected_result
 
 
-class ERO:
-    @staticmethod
-    def urlopen():
-        print("Raise URL/HTTPError")
-        #  raise ValueError
-        #  raise HTTPError("URL", 404, "Not found", None, None)
-        raise URLError("missing url")
-
-
-# TODO
-# - check if above static method can be simple method
-# - add HTTPError handling/testing.
-def test_get_data_raise_exception(mocker, analizy_web):
+def test_get_data_raise_URLError(mocker, analizy_web):
     mocker.patch.object(
         urllib.request,
         "urlopen",
@@ -122,7 +97,19 @@ def test_get_data_raise_exception(mocker, analizy_web):
     mocker.patch.object(requests, "get", return_value=DummyRequestGet())
     mocker.patch.object(bs4, "BeautifulSoup", return_value=DummySoup(""))
     result = analizy_web.get_data()
-    #  print(result)
+    assert result == {"I01": (None, None)}
+
+
+def test_get_data_raise_HTTPError(mocker, analizy_web):
+    mocker.patch.object(
+        urllib.request,
+        "urlopen",
+        side_effect=HTTPError("OJ!", 404, "aa", None, None),
+    )
+    mocker.patch.object(request, "Request", return_value=DummyRequest())
+    mocker.patch.object(requests, "get", return_value=DummyRequestGet())
+    mocker.patch.object(bs4, "BeautifulSoup", return_value=DummySoup(""))
+    result = analizy_web.get_data()
     assert result == {"I01": (None, None)}
 
 
@@ -133,7 +120,7 @@ def test_get_data_raise_exception(mocker, analizy_web):
         (ANALIZY_PL_bad_date_class, "span", "productBigText"),
     ),
 )
-def test_get_element_exception(analizy_web, html, tag, id_):
+def test_analizy_get_element_exception(analizy_web, html, tag, id_):
     with pytest.raises(AttributeError):
         soup = bs4.BeautifulSoup(html, "lxml")
         analizy_web.get_element(soup, tag, id_)
@@ -151,6 +138,6 @@ def test_get_element_exception(analizy_web, html, tag, id_):
         ),
     ),
 )
-def test_get_element_found(analizy_web, tag, id_, expected_result):
+def test_analizy_get_element_found(analizy_web, tag, id_, expected_result):
     soup = bs4.BeautifulSoup(ANALIZY_PL, "lxml")
     assert str(analizy_web.get_element(soup, tag, id_)) == expected_result
