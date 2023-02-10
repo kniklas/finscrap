@@ -10,6 +10,9 @@ from urllib.error import URLError
 import webscrap
 
 
+# TODO
+# - add test and feature to convert dates for biznesradar, ishares and borsa
+
 ANALIZY_PL = """
 <p class=\'lightProductText\'>12.2</p>
 <span class=\'productBigText\'>2022-12-01</span>
@@ -35,9 +38,6 @@ ANALIZY_PL_bad_date_tag = """
 <div class=\'productBigText2\'>2022-12-01</div>
 """
 
-# TODO
-# - add test coverage
-
 
 class DummySoup(bs4.BeautifulSoup):
     def __init__(self, in_soup):
@@ -53,6 +53,11 @@ class DummyRequestGet:
 def fixture_analizy_web():
     analizy_web = webscrap.GetAssetAnalizy("analizy.pl")
     yield analizy_web
+
+
+def test_analizy_date_conversion(analizy_web):
+    input_date = "09.02.2023"
+    assert analizy_web.convert_date(input_date) == "2023-02-09"
 
 
 def test_biznesradar_pl_initialisation():

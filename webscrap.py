@@ -39,13 +39,11 @@ class GetAsset:
                 except (AttributeError, TypeError) as e:
                     print(f"Cannot extract date from {req.full_url} - {e}")
                     date = None
-
                 try:
                     price = self.get_price(soup)
                 except (AttributeError, TypeError) as e:
                     print(f"Cannot extract price from: {req.full_url} - {e}")
                     price = None
-
                 print(f"{isin},{date},{price}")
             d[isin] = (date, price)
         return d
@@ -66,6 +64,14 @@ class GetAssetAnalizy(GetAsset):
     def get_price(self, soup):
         p = super().get_element(soup, self.price_tag, self.price_class)
         return p.text.replace(",", ".")
+
+    @staticmethod
+    def convert_date(input_date):
+        day = input_date[0:2]
+        month = input_date[3:5]
+        year = input_date[6:10]
+        output_date = f"{year}-{month}-{day}"
+        return output_date
 
 
 class GetAssetBiznesR(GetAsset):
