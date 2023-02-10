@@ -55,6 +55,22 @@ def fixture_analizy_web():
     yield analizy_web
 
 
+@pytest.fixture(name="borsa_web")
+def fixture_borsa_web():
+    borsa_web = webscrap.GetAssetBorsa("borsa")
+    yield borsa_web
+
+
+def test_borsa_initialisation(borsa_web):
+    assert borsa_web
+
+
+#  @pytest.mark.skip
+def test_borsa_date_conversion(borsa_web):
+    input_date = "23/02/10"
+    assert borsa_web.convert_date(input_date) == "2023-02-10"
+
+
 def test_analizy_date_conversion(analizy_web):
     input_date = "09.02.2023"
     assert analizy_web.convert_date(input_date) == "2023-02-09"
@@ -65,14 +81,13 @@ def test_biznesradar_pl_initialisation():
     assert biznesradar_web
 
 
-def test_borsa_initialisation():
-    borsa_web = webscrap.GetAssetAnalizy("borsa")
-    assert borsa_web
-
-
 def test_ishares_initialisation():
     ishares_web = webscrap.GetAssetAnalizy("ishares")
     assert ishares_web
+
+
+def test_concatenate_date(analizy_web):
+    assert analizy_web.concatenate_date("01", "02", "2022") == "2022-02-01"
 
 
 def test_get_data_raise_URLError(mocker, analizy_web):

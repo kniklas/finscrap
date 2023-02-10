@@ -11,6 +11,10 @@ class GetAsset:
         self.sel = funds.funds_urls[site]
         print(f"Initialize: {site}")
 
+    @staticmethod
+    def concatenate_date(day, month, year):
+        return f"{year}-{month}-{day}"
+
     def get_element(self, soup, tag, class_id):
         d = soup.find(tag, class_id)
         if d is None:
@@ -70,8 +74,7 @@ class GetAssetAnalizy(GetAsset):
         day = input_date[0:2]
         month = input_date[3:5]
         year = input_date[6:10]
-        output_date = f"{year}-{month}-{day}"
-        return output_date
+        return GetAsset.concatenate_date(day, month, year)
 
 
 class GetAssetBiznesR(GetAsset):
@@ -106,6 +109,15 @@ class GetAssetBorsa(GetAsset):
     def get_price(self, soup):
         p = super().get_element(soup, self.price_tag, self.price_class)
         return p.strong.text
+
+    @staticmethod
+    def convert_date(input_date):
+        print("BORSA - date convert")
+        day = input_date[6:8]
+        month = input_date[3:5]
+        year = "20" + input_date[0:2]
+        print(year, month, day)
+        return GetAsset.concatenate_date(day, month, year)
 
 
 class GetAssetIShares(GetAsset):
