@@ -112,7 +112,6 @@ class GetAssetBorsa(GetAsset):
 
     @staticmethod
     def convert_date(input_date):
-        print("BORSA - date convert")
         day = input_date[6:8]
         month = input_date[3:5]
         year = "20" + input_date[0:2]
@@ -135,3 +134,24 @@ class GetAssetIShares(GetAsset):
     def get_price(self, soup):
         p = super().get_element(soup, self.price_tag, self.price_class)
         return p.text[2:].strip()
+
+    @staticmethod
+    def convert_date(input_date):
+        month_dict = {
+            "Jan": "01",
+            "Feb": "02",
+            "Mar": "03",
+            "Apr": "04",
+            "May": "05",
+            "Jun": "06",
+            "Jul": "07",
+            "Aug": "08",
+            "Sep": "09",
+            "Oct": "10",
+            "Nov": "11",
+            "Dec": "12",
+        }
+        day = input_date[4:6]
+        month = month_dict[input_date[0:3]]
+        year = input_date[7:11]
+        return GetAsset.concatenate_date(day, month, year)

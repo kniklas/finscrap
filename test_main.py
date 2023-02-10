@@ -10,9 +10,6 @@ from urllib.error import URLError
 import webscrap
 
 
-# TODO
-# - add test and feature to convert dates for biznesradar, ishares and borsa
-
 ANALIZY_PL = """
 <p class=\'lightProductText\'>12.2</p>
 <span class=\'productBigText\'>2022-12-01</span>
@@ -61,11 +58,12 @@ def fixture_borsa_web():
     yield borsa_web
 
 
-def test_borsa_initialisation(borsa_web):
-    assert borsa_web
+@pytest.fixture(name="ishares_web")
+def fixture_ishares_web():
+    ishares_web = webscrap.GetAssetIShares("ishares")
+    yield ishares_web
 
 
-#  @pytest.mark.skip
 def test_borsa_date_conversion(borsa_web):
     input_date = "23/02/10"
     assert borsa_web.convert_date(input_date) == "2023-02-10"
@@ -76,14 +74,22 @@ def test_analizy_date_conversion(analizy_web):
     assert analizy_web.convert_date(input_date) == "2023-02-09"
 
 
+def test_ishares_date_conversion(ishares_web):
+    input_date = "Feb/09/2023"
+    assert ishares_web.convert_date(input_date) == "2023-02-09"
+
+
+def test_analizy_pl_initialisation(analizy_web):
+    assert analizy_web
+
+
+def test_ishares_initialisation(ishares_web):
+    assert ishares_web
+
+
 def test_biznesradar_pl_initialisation():
     biznesradar_web = webscrap.GetAssetAnalizy("biznesradar.pl")
     assert biznesradar_web
-
-
-def test_ishares_initialisation():
-    ishares_web = webscrap.GetAssetAnalizy("ishares")
-    assert ishares_web
 
 
 def test_concatenate_date(analizy_web):
@@ -108,10 +114,6 @@ def test_get_data_raise_HTTPError(mocker, analizy_web):
     )
     result = analizy_web.get_data()
     assert result == {"I01": (None, None)}
-
-
-def test_analizy_pl_initialisation(analizy_web):
-    assert analizy_web
 
 
 @pytest.mark.parametrize(
