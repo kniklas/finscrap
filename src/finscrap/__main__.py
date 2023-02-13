@@ -1,16 +1,16 @@
 if __name__ == "__main__":
-    import webscrap
+    import finscrap.finscrap as finscrap
 
     print("LOADING")
 
-    analizy = webscrap.GetAssetAnalizy("analizy.pl")
+    analizy = finscrap.GetAssetAnalizy("analizy.pl")
     analizy.get_data()
 
-    biznesr = webscrap.GetAssetBiznesR("biznesradar.pl")
+    biznesr = finscrap.GetAssetBiznesR("biznesradar.pl")
     biznesr.get_data()
 
-    borsa = webscrap.GetAssetBorsa("borsa")
+    borsa = finscrap.GetAssetBorsa("borsa")
     borsa.get_data()
 
-    ishares = webscrap.GetAssetIShares("ishares")
+    ishares = finscrap.GetAssetIShares("ishares")
     ishares.get_data()

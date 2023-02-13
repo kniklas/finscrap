@@ -7,7 +7,7 @@ from urllib.error import HTTPError
 from urllib.error import URLError
 
 
-import finscrap.finscrap as webscrap
+import finscrap.finscrap as finscrap
 
 
 ANALIZY_PL = """
@@ -48,19 +48,19 @@ class DummyRequestGet:
 
 @pytest.fixture(name="analizy_web")
 def fixture_analizy_web():
-    analizy_web = webscrap.GetAssetAnalizy("analizy.pl")
+    analizy_web = finscrap.GetAssetAnalizy("analizy.pl")
     yield analizy_web
 
 
 @pytest.fixture(name="borsa_web")
 def fixture_borsa_web():
-    borsa_web = webscrap.GetAssetBorsa("borsa")
+    borsa_web = finscrap.GetAssetBorsa("borsa")
     yield borsa_web
 
 
 @pytest.fixture(name="ishares_web")
 def fixture_ishares_web():
-    ishares_web = webscrap.GetAssetIShares("ishares")
+    ishares_web = finscrap.GetAssetIShares("ishares")
     yield ishares_web
 
 
@@ -88,7 +88,7 @@ def test_ishares_initialisation(ishares_web):
 
 
 def test_biznesradar_pl_initialisation():
-    biznesradar_web = webscrap.GetAssetAnalizy("biznesradar.pl")
+    biznesradar_web = finscrap.GetAssetAnalizy("biznesradar.pl")
     assert biznesradar_web
 
 
