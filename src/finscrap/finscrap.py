@@ -1,9 +1,10 @@
 import requests
 import bs4
-import funds as funds
 from urllib import request
 from urllib.error import HTTPError
 from urllib.error import URLError
+
+import finscrap.funds as funds
 
 
 class GetAsset:

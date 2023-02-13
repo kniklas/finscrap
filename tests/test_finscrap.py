@@ -7,7 +7,7 @@ from urllib.error import HTTPError
 from urllib.error import URLError
 
 
-import finscrap as webscrap
+import finscrap.finscrap as webscrap
 
 
 ANALIZY_PL = """
