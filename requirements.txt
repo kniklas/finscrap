@@ -2,5 +2,7 @@ requests
 beautifulsoup4
 flake8
 black
+pylint
 pytest
 pytest-watch
+pre-commit
