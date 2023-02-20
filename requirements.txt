@@ -6,3 +6,4 @@ pylint
 pytest
 pytest-watch
 pre-commit
+coverage
