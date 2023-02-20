@@ -1,3 +1,5 @@
+"""Module default URLs used for automated tests"""
+
 funds_urls = {
     "analizy.pl": {
         "I01": "https://www.analizy.pl/fundusze-inwestycyjne-otwarte/ALL90/allianz-dochodowy-income-and-growth",

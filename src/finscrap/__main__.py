@@ -1,5 +1,7 @@
+"""Loader and executor of finscrap module."""
+
 if __name__ == "__main__":
-    import finscrap.finscrap as finscrap
+    from finscrap import finscrap
 
     print("LOADING")
 

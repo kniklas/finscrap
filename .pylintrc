@@ -1,0 +1,10 @@
+[MAIN]
+
+ignore-patterns=funds_prv.py
+
+[FORMAT]
+
+max-line-length=120
+
+[MASTER]
+init-hook='import sys; sys.path.append("src")'

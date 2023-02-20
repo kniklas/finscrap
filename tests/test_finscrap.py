@@ -1,13 +1,18 @@
-import pytest
-import requests
-import bs4
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+# pylint: disable=abstract-method
+
 import urllib
 from urllib import request
 from urllib.error import HTTPError
 from urllib.error import URLError
 
+import pytest
+import requests
+import bs4
 
-import finscrap.finscrap as finscrap
+from finscrap import finscrap
 
 
 ANALIZY_PL = """
@@ -15,22 +20,22 @@ ANALIZY_PL = """
 <span class=\'productBigText\'>2022-12-01</span>
 """
 
-ANALIZY_PL_bad_price_class = """
+ANALIZY_PL_BAD_PRICE_CLASS = """
 <p class=\'lightProductText2\'>12.2</p>
 <span class=\'productBigText\'>2022-12-01</span>
 """
 
-ANALIZY_PL_bad_date_class = """
+ANALIZY_PL_BAD_DATE_CLASS = """
 <p class=\'lightProductText\'>12.2</p>
 <span class=\'productBigText2\'>2022-12-01</span>
 """
 
-ANALIZY_PL_bad_price_tag = """
+ANALIZY_PL_BAD_PRICE_TAG = """
 <l class=\'lightProductText\'>12.2</l>
 <span class=\'productBigText2\'>2022-12-01</span>
 """
 
-ANALIZY_PL_bad_date_tag = """
+ANALIZY_PL_BAD_DATE_TAG = """
 <p class=\'lightProductText\'>12.2</p>
 <div class=\'productBigText2\'>2022-12-01</div>
 """
@@ -96,7 +101,7 @@ def test_concatenate_date(analizy_web):
     assert analizy_web.concatenate_date("01", "02", "2022") == "2022-02-01"
 
 
-def test_get_data_raise_URLError(mocker, analizy_web):
+def test_get_data_raise_url_error(mocker, analizy_web):
     mocker.patch.object(
         urllib.request,
         "urlopen",
@@ -106,7 +111,7 @@ def test_get_data_raise_URLError(mocker, analizy_web):
     assert result == {"I01": (None, None)}
 
 
-def test_get_data_raise_HTTPError(mocker, analizy_web):
+def test_get_data_raise_http_error(mocker, analizy_web):
     mocker.patch.object(
         urllib.request,
         "urlopen",
@@ -119,10 +124,10 @@ def test_get_data_raise_HTTPError(mocker, analizy_web):
 @pytest.mark.parametrize(
     "html, tag, id_",
     (
-        (ANALIZY_PL_bad_price_class, "p", "lightProductText"),
-        (ANALIZY_PL_bad_price_tag, "p", "lightProductText"),
-        (ANALIZY_PL_bad_date_class, "span", "productBigText"),
-        (ANALIZY_PL_bad_date_tag, "span", "productBigText"),
+        (ANALIZY_PL_BAD_PRICE_CLASS, "p", "lightProductText"),
+        (ANALIZY_PL_BAD_PRICE_TAG, "p", "lightProductText"),
+        (ANALIZY_PL_BAD_DATE_CLASS, "span", "productBigText"),
+        (ANALIZY_PL_BAD_DATE_TAG, "span", "productBigText"),
     ),
 )
 def test_analizy_get_element_exception(analizy_web, html, tag, id_):
@@ -135,8 +140,8 @@ def test_analizy_get_element_exception(analizy_web, html, tag, id_):
     "html, expected_result",
     (
         (ANALIZY_PL, {"I01": ("12.2", "2022-12-01")}),
-        (ANALIZY_PL_bad_price_class, {"I01": (None, "2022-12-01")}),
-        (ANALIZY_PL_bad_date_class, {"I01": ("12.2", None)}),
+        (ANALIZY_PL_BAD_PRICE_CLASS, {"I01": (None, "2022-12-01")}),
+        (ANALIZY_PL_BAD_DATE_CLASS, {"I01": ("12.2", None)}),
     ),
 )
 def test_analizy_get_data(mocker, analizy_web, html, expected_result):
