@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """Module default URLs used for automated tests"""
 
 funds_urls = {

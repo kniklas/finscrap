@@ -1,7 +1,6 @@
 # pylint: disable=missing-module-docstring
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
-# pylint: disable=abstract-method
 
 import urllib
 from urllib import request
@@ -12,6 +11,7 @@ import pytest
 import requests
 import bs4
 
+# pylint: disable=import-error
 from finscrap import finscrap
 
 
@@ -41,6 +41,8 @@ ANALIZY_PL_BAD_DATE_TAG = """
 """
 
 
+# pylint: disable=too-few-public-methods
+# pylint: disable=abstract-method
 class DummySoup(bs4.BeautifulSoup):
     def __init__(self, in_soup):
         super().__init__(in_soup, "lxml")
@@ -152,6 +154,7 @@ def test_analizy_get_data(mocker, analizy_web, html, expected_result):
     assert result == expected_result
 
 
+# pylint: disable=fixme
 # TODO: consider if this is not duplicate of test_get_data()
 @pytest.mark.parametrize(
     "tag, id_, expected_result",

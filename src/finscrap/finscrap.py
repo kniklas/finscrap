@@ -40,8 +40,10 @@ class GetAsset:
                 # Required to get URL or hostname in error handling
                 req = request.Request(self.sel[isin])
                 # Catching actual exception
+                # pylint: disable=consider-using-with
                 request.urlopen(self.sel[isin])
             except HTTPError as exception:
+                # pylint: disable=used-before-assignment
                 print(
                     f"{exception} | Verify if URL is correct: \
                       {req.full_url}"
