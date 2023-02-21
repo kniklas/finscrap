@@ -7,3 +7,4 @@ pytest
 pytest-watch
 pre-commit
 coverage
+setuptools
