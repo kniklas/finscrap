@@ -8,3 +8,4 @@ pytest-watch
 pre-commit
 coverage
 setuptools
+twine
