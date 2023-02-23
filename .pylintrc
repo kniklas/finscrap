@@ -1,0 +1,9 @@
+[MAIN]
+ignore-patterns=funds_prv.py
+ignore-paths=^build/lib/finscrap/.*$
+
+[FORMAT]
+max-line-length=79
+
+[MASTER]
+init-hook='import sys; sys.path.append("src")'
