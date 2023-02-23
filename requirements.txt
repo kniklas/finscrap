@@ -12,3 +12,4 @@ coverage
 setuptools
 twine
 yamllint
+coveralls
