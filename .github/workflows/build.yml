@@ -1,0 +1,60 @@
+---
+# This workflow is to verify build only
+
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+
+jobs:
+  build:
+    name: Build checks and coveralls
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          make setup
+      - name: Lint
+        run: |
+          make lint
+      - name: Test
+        run: |
+          make test
+      - name: Build
+        run: |
+          make build
+      - name: Coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_PARALLEL: true
+        run: |
+          coveralls --service=github
+
+  coveralls_finish:
+    name: Coveralls completion
+    needs: build
+    runs-on: ubuntu-latest
+    container: python:3-slim
+    steps:
+      - name: Coveralls Finished
+        run: |
+          pip3 install --upgrade coveralls
+          coveralls --service=github --finish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

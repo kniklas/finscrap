@@ -1,11 +1,15 @@
 requests
 beautifulsoup4
+lxml
 flake8
 black
 pylint
 pytest
 pytest-watch
+pytest-mock
 pre-commit
 coverage
 setuptools
 twine
+yamllint
+coveralls
