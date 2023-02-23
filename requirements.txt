@@ -6,6 +6,7 @@ black
 pylint
 pytest
 pytest-watch
+pytest-mock
 pre-commit
 coverage
 setuptools
