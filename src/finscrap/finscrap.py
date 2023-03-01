@@ -93,7 +93,7 @@ class GetAssetAnalizy(GetAsset):
     def get_date(self, soup):
         """Gets date for analizy.pl"""
         date = super().get_element(soup, self.date_tag, self.date_class)
-        return date.text
+        return self.convert_date(date.text)
 
     def get_price(self, soup):
         """Gets price for analizy.pl"""
@@ -145,7 +145,7 @@ class GetAssetBorsa(GetAsset):
     def get_date(self, soup):
         """Gets date for borsa.it"""
         date = super().get_element(soup, self.date_tag, self.date_class)
-        return date.strong.text[0:8]
+        return self.convert_date(date.strong.text[0:8])
 
     def get_price(self, soup):
         """Gets date for borsa.it"""
@@ -158,7 +158,6 @@ class GetAssetBorsa(GetAsset):
         day = input_date[6:8]
         month = input_date[3:5]
         year = "20" + input_date[0:2]
-        print(year, month, day)
         return GetAsset.concatenate_date(day, month, year)
 
 
@@ -176,7 +175,8 @@ class GetAssetIShares(GetAsset):
     def get_date(self, soup):
         """Gets date for ishares page"""
         date = super().get_element(soup, self.date_tag, self.date_class)
-        return date.text[11:23].replace(" ", "/").replace(",", "")
+        cleared_date = date.text[11:23].replace(" ", "/").replace(",", "")
+        return self.convert_date(cleared_date)
 
     def get_price(self, soup):
         """Gets price for ishares page"""
