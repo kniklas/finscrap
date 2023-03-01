@@ -16,28 +16,28 @@ from finscrap import finscrap
 
 
 ANALIZY_PL = """
-<p class=\'lightProductText\'>12.2</p>
-<span class=\'productBigText\'>2022-12-01</span>
+<span class=\'productBigText\'>12.2</span>
+<p class=\'lightProductText\'>01.12.2022</p>
 """
 
 ANALIZY_PL_BAD_PRICE_CLASS = """
-<p class=\'lightProductText2\'>12.2</p>
-<span class=\'productBigText\'>2022-12-01</span>
+<span class=\'productBigText2\'>12.2</span>
+<p class=\'lightProductText\'>01.12.2022</p>
 """
 
 ANALIZY_PL_BAD_DATE_CLASS = """
-<p class=\'lightProductText\'>12.2</p>
-<span class=\'productBigText2\'>2022-12-01</span>
+<span class=\'productBigText\'>12.2</span>
+<p class=\'lightProductText2\'>01.12.2022</p>
 """
 
 ANALIZY_PL_BAD_PRICE_TAG = """
-<l class=\'lightProductText\'>12.2</l>
-<span class=\'productBigText2\'>2022-12-01</span>
+<l class=\'productBigText\'>12.2</l>
+<p class=\'lightProductText\'>01.12.2022</p>
 """
 
 ANALIZY_PL_BAD_DATE_TAG = """
-<p class=\'lightProductText\'>12.2</p>
-<div class=\'productBigText2\'>2022-12-01</div>
+<span class=\'productBigText\'>12.2</span>
+<l class=\'lightProductText\'>01.12.2022</l>
 """
 
 
@@ -126,10 +126,10 @@ def test_get_data_raise_http_error(mocker, analizy_web):
 @pytest.mark.parametrize(
     "html, tag, id_",
     (
-        (ANALIZY_PL_BAD_PRICE_CLASS, "p", "lightProductText"),
-        (ANALIZY_PL_BAD_PRICE_TAG, "p", "lightProductText"),
-        (ANALIZY_PL_BAD_DATE_CLASS, "span", "productBigText"),
-        (ANALIZY_PL_BAD_DATE_TAG, "span", "productBigText"),
+        (ANALIZY_PL_BAD_PRICE_CLASS, "span", "productBigText"),
+        (ANALIZY_PL_BAD_PRICE_TAG, "span", "productBigText"),
+        (ANALIZY_PL_BAD_DATE_CLASS, "p", "lightProductText"),
+        (ANALIZY_PL_BAD_DATE_TAG, "p", "lightProductText"),
     ),
 )
 def test_analizy_get_element_exception(analizy_web, html, tag, id_):
@@ -141,9 +141,9 @@ def test_analizy_get_element_exception(analizy_web, html, tag, id_):
 @pytest.mark.parametrize(
     "html, expected_result",
     (
-        (ANALIZY_PL, {"I01": ("12.2", "2022-12-01")}),
-        (ANALIZY_PL_BAD_PRICE_CLASS, {"I01": (None, "2022-12-01")}),
-        (ANALIZY_PL_BAD_DATE_CLASS, {"I01": ("12.2", None)}),
+        (ANALIZY_PL, {"I01": ("2022-12-01", "12.2")}),
+        (ANALIZY_PL_BAD_PRICE_CLASS, {"I01": ("2022-12-01", None)}),
+        (ANALIZY_PL_BAD_DATE_CLASS, {"I01": (None, "12.2")}),
     ),
 )
 def test_analizy_get_data(mocker, analizy_web, html, expected_result):
@@ -159,11 +159,15 @@ def test_analizy_get_data(mocker, analizy_web, html, expected_result):
 @pytest.mark.parametrize(
     "tag, id_, expected_result",
     (
-        ("p", "lightProductText", '<p class="lightProductText">12.2</p>'),
+        (
+            "p",
+            "lightProductText",
+            '<p class="lightProductText">01.12.2022</p>',
+        ),
         (
             "span",
             "productBigText",
-            '<span class="productBigText">2022-12-01</span>',
+            '<span class="productBigText">12.2</span>',
         ),
     ),
 )
