@@ -1,4 +1,4 @@
-# fin-webscrap (WIP)
+# finscrap (WIP)
 
 [![build](https://github.com/kniklas/finscrap/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/kniklas/finscrap/actions/workflows/build.yml)
 
@@ -9,8 +9,26 @@ Financial web scraping - Work In Progress
 Objective of this project is to webscrap financial data and provide API
 deployed in the cloud to access the data.
 
+
+# How to use
+
+Install the package (from test pypi):
+
+`pip install --index-url https://test.pypi.org/simple/ finscrap`
+
+Redirect output to csv file:
+
+`python3 -m finscrap > funds.csv`
+
+
 # Contributing
 
 ## pre-commit
 
-Make sure to run `pre-commit install` initially!
+Run `pre-commit install` initially!
+
+## Checking code locally
+
+* `pre-commit run -a` - run pre-commit checks on all files
+* `make test` - run unit tests and display coverage report
+* `make` - run setup, lint, test and clean jobs
