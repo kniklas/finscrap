@@ -9,7 +9,7 @@ setup:
 lint:
 	@echo "Starting lint"
 	find . -name "*.yml" | xargs python -m yamllint
-	find . -name "*.py" | xargs python -m black --check
+	find . -name "*.py" | xargs python -m black --check --verbose
 	find . -name "*.py" | xargs python -m pylint
 	@echo "Completed lint"
 
