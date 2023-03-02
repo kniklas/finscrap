@@ -7,6 +7,7 @@ from urllib.error import URLError
 import requests
 import bs4
 
+# Load funds configuration
 from finscrap import funds
 
 
@@ -58,6 +59,7 @@ class GetAsset:
             else:
                 resp = requests.get(self.sel[isin], timeout=100)
                 soup = bs4.BeautifulSoup(resp.content, "lxml")
+                # Get date
                 try:
                     date = self.get_date(soup)
                 except (AttributeError, TypeError) as exception:
@@ -66,6 +68,7 @@ class GetAsset:
                         {exception}"
                     )
                     date = None
+                # Get price
                 try:
                     price = self.get_price(soup)
                 except (AttributeError, TypeError) as exception:
