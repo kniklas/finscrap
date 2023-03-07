@@ -16,6 +16,10 @@ Install the package (from test pypi):
 
 `pip install --index-url https://test.pypi.org/simple/ finscrap`
 
+Run webscraping with output to STDOUT using definition in `funds.json` file::
+
+`python3 -m finscrap funds.json`
+
 Redirect output to csv file:
 
 `python3 -m finscrap > funds.csv`

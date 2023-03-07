@@ -7,16 +7,13 @@ from urllib.error import URLError
 import requests
 import bs4
 
-# Load funds configuration
-from finscrap import funds
-
 
 class GetAsset:
     """Generic class to get assets"""
 
-    def __init__(self, site):
+    def __init__(self, site, funds):
         """Constructor to initialise site with URL address"""
-        self.sel = funds.funds_urls[site]
+        self.sel = funds[site]
         print(f"Initialize: {site}")
 
     @staticmethod
@@ -85,9 +82,9 @@ class GetAsset:
 class GetAssetAnalizy(GetAsset):
     """Specific implementation for analizy.pl"""
 
-    def __init__(self, site):
+    def __init__(self, site, funds):
         """Setup analizy.pl <p> and <span> tags"""
-        super().__init__(site)
+        super().__init__(site, funds)
         self.date_tag = "p"
         self.date_class = "lightProductText"
         self.price_tag = "span"
@@ -115,9 +112,9 @@ class GetAssetAnalizy(GetAsset):
 class GetAssetBiznesR(GetAsset):
     """Specific implementation for biznseradar.pl"""
 
-    def __init__(self, site):
+    def __init__(self, site, funds):
         """Setup biznesradar.pl <time> and <span> tags"""
-        super().__init__(site)
+        super().__init__(site, funds)
         self.date_tag = "time"
         self.date_class = "q_ch_date"
         self.price_tag = "span"
@@ -137,9 +134,9 @@ class GetAssetBiznesR(GetAsset):
 class GetAssetBorsa(GetAsset):
     """Specific implementation for borsa.it"""
 
-    def __init__(self, site):
+    def __init__(self, site, funds):
         """Setup borsa.it <span> tags definitions"""
-        super().__init__(site)
+        super().__init__(site, funds)
         self.date_tag = "span"
         self.date_class = "t-text -block -size-xs | -xs"
         self.price_tag = "span"
@@ -167,9 +164,9 @@ class GetAssetBorsa(GetAsset):
 class GetAssetIShares(GetAsset):
     """Class implements specific methods for ishares page"""
 
-    def __init__(self, site):
+    def __init__(self, site, funds):
         """Setup iShares page specific <span> tags"""
-        super().__init__(site)
+        super().__init__(site, funds)
         self.date_tag = "span"
         self.date_class = "header-nav-label navAmount"
         self.price_tag = "span"

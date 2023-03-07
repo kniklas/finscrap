@@ -3,6 +3,7 @@
 # pylint: disable=missing-function-docstring
 
 import urllib
+import json
 from urllib import request
 from urllib.error import HTTPError
 from urllib.error import URLError
@@ -40,6 +41,8 @@ ANALIZY_PL_BAD_DATE_TAG = """
 <l class=\'lightProductText\'>01.12.2022</l>
 """
 
+TEST_DATA = "tests/funds.json"
+
 
 # pylint: disable=too-few-public-methods
 # pylint: disable=abstract-method
@@ -53,21 +56,28 @@ class DummyRequestGet:
         self.content = "Request Get Dummy content"
 
 
+@pytest.fixture(name="test_data")
+def fixture_test_data():
+    with open(TEST_DATA, "r", encoding="utf-8") as fund_config:
+        test_data = json.load(fund_config)
+    yield test_data
+
+
 @pytest.fixture(name="analizy_web")
-def fixture_analizy_web():
-    analizy_web = finscrap.GetAssetAnalizy("analizy.pl")
+def fixture_analizy_web(test_data):
+    analizy_web = finscrap.GetAssetAnalizy("analizy.pl", test_data)
     yield analizy_web
 
 
 @pytest.fixture(name="borsa_web")
-def fixture_borsa_web():
-    borsa_web = finscrap.GetAssetBorsa("borsa")
+def fixture_borsa_web(test_data):
+    borsa_web = finscrap.GetAssetBorsa("borsa", test_data)
     yield borsa_web
 
 
 @pytest.fixture(name="ishares_web")
-def fixture_ishares_web():
-    ishares_web = finscrap.GetAssetIShares("ishares")
+def fixture_ishares_web(test_data):
+    ishares_web = finscrap.GetAssetIShares("ishares", test_data)
     yield ishares_web
 
 
@@ -94,8 +104,8 @@ def test_ishares_initialisation(ishares_web):
     assert ishares_web
 
 
-def test_biznesradar_pl_initialisation():
-    biznesradar_web = finscrap.GetAssetAnalizy("biznesradar.pl")
+def test_biznesradar_pl_initialisation(test_data):
+    biznesradar_web = finscrap.GetAssetAnalizy("biznesradar.pl", test_data)
     assert biznesradar_web
 
 
