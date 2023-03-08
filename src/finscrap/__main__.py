@@ -1,29 +1,22 @@
 """Loader and executor of finscrap module."""
 
-import json
 import click
 
 from finscrap import finscrap
 
 
 @click.command()
-@click.argument("filename")
-def read_config(filename):
-    "Load funds config as dictionary"
-    with open(filename, "r", encoding="utf-8") as fund_config:
-        funds_urls = json.load(fund_config)
+@click.argument("funds_json", type=click.Path(exists=True))
+@click.option("-c", "--csv", type=click.Path(), help="Path to CSV output file")
+def read_config(funds_json, csv):
+    """Reads funds prices and valuation dates from defined URLs via FUNDS_JSON
+    definition file.
+    """
+    webscapper = finscrap.GetData(funds_json)
+    webscapper.get_data()
 
-    analizy = finscrap.GetAssetAnalizy("analizy.pl", funds_urls)
-    analizy.get_data()
-
-    biznesr = finscrap.GetAssetBiznesR("biznesradar.pl", funds_urls)
-    biznesr.get_data()
-
-    borsa = finscrap.GetAssetBorsa("borsa", funds_urls)
-    borsa.get_data()
-
-    ishares = finscrap.GetAssetIShares("ishares", funds_urls)
-    ishares.get_data()
+    if csv:
+        webscapper.out_csv(csv)
 
 
 if __name__ == "__main__":
