@@ -9,8 +9,10 @@ setup:
 lint:
 	@echo "Starting lint"
 	find . -name "*.yml" | xargs python -m yamllint
-	find . -name "*.py" | xargs python -m black --check --verbose
-	find . -name "*.py" | xargs python -m pylint
+	find . -name "*.py" -not -path "./build/*" \
+		| xargs python -m black --check --verbose
+	find . -name "*.py" -not -path "./build/*" \
+		| xargs python -m pylint
 	@echo "Completed lint"
 
 test:
@@ -34,3 +36,12 @@ clean:
 	find . -type d -name __pycache__ -exec rm -r {} \+
 	find . -type d -name finscrap.egg-info -exec rm -r {} \+
 	@echo "Completed clean"
+
+help:
+	python -m finscrap --help
+
+e2e:
+	python -m finscrap tests/funds.json
+
+e2e-csv:
+	python -m finscrap -c out.csv tests/funds.json

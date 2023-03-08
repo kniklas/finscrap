@@ -16,13 +16,13 @@ Install the package (from test pypi):
 
 `pip install --index-url https://test.pypi.org/simple/ finscrap`
 
-Run webscraping with output to STDOUT using definition in `funds.json` file::
-
-`python3 -m finscrap funds.json`
-
 Redirect output to csv file:
 
-`python3 -m finscrap > funds.csv`
+`python3 -m finscrap --csv output.csv funds.json`
+
+Note: `--csv` option has shorter equivalent: `-c`
+
+To get more help use: `python3 -m finscrap --help`
 
 
 # Contributing
@@ -35,4 +35,5 @@ Run `pre-commit install` initially!
 
 * `pre-commit run -a` - run pre-commit checks on all files
 * `make test` - run unit tests and display coverage report
+* `make e2e-csv` - run end to end tests with csv option
 * `make` - run setup, lint, test and clean jobs

@@ -1,11 +1,75 @@
 """Module webscraps financial data from web pages."""
 
+import json
+import csv
 from urllib import request
 from urllib.error import HTTPError
 from urllib.error import URLError
 
 import requests
 import bs4
+
+
+class GetData:
+    """Gets webscrapped data"""
+
+    def __init__(self, funds_json):
+        """Create objects to webscrap data."""
+        funds = self.load_funds_config(funds_json)
+        self.providers = list(funds.keys())
+        self.data_dict = {}
+        print("Initialize GetData")
+        print("Present providers:", self.providers)
+        if "analizy.pl" in self.providers:
+            self.analizy_obj = GetAssetAnalizy("analizy.pl", funds)
+        if "biznesradar.pl" in self.providers:
+            self.biznesr_obj = GetAssetBiznesR("biznesradar.pl", funds)
+        if "borsa" in self.providers:
+            self.borsa_obj = GetAssetBorsa("borsa", funds)
+        if "ishares" in self.providers:
+            self.ishares_obj = GetAssetIShares("ishares", funds)
+
+    @staticmethod
+    def load_funds_config(funds_json):
+        """Load from json file, funds config"""
+        with open(funds_json, "r", encoding="utf-8") as fund_config:
+            funds_urls = json.load(fund_config)
+        return funds_urls
+
+    @staticmethod
+    def dict_to_list(data_dict):
+        """Covert data result from dictionary to list format, so it could be
+        saved as CSV in out_csv() method."""
+        asset_list = []
+        for asset_id in data_dict:
+            list_item = [
+                asset_id,
+                data_dict[asset_id][0],
+                data_dict[asset_id][1],
+            ]
+            asset_list.append(list_item)
+        return asset_list
+
+    def get_data(self):
+        """Get data for defined web pages"""
+        if "analizy.pl" in self.providers:
+            self.data_dict.update(self.analizy_obj.get_data())
+        if "biznesradar.pl" in self.providers:
+            self.data_dict.update(self.biznesr_obj.get_data())
+        if "borsa" in self.providers:
+            self.data_dict.update(self.borsa_obj.get_data())
+        if "ishares" in self.providers:
+            self.data_dict.update(self.ishares_obj.get_data())
+        #  print(self.data_dict)
+
+    def out_csv(self, csv_path):
+        """Save result to CSV"""
+        print("Save results to CSV:", csv_path)
+        data_set = self.dict_to_list(self.data_dict)
+        #  print(data_set)
+        with open(csv_path, "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerows(data_set)
 
 
 class GetAsset:
@@ -74,7 +138,6 @@ class GetAsset:
                         {exception}"
                     )
                     price = None
-                print(f"{isin},{date},{price}")
             data[isin] = (date, price)
         return data
 
