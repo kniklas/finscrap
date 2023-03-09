@@ -34,3 +34,12 @@ clean:
 	find . -type d -name __pycache__ -exec rm -r {} \+
 	find . -type d -name finscrap.egg-info -exec rm -r {} \+
 	@echo "Completed clean"
+
+help:
+	python -m finscrap --help
+
+e2e:
+	python -m finscrap tests/funds.json
+
+e2e-csv:
+	python -m finscrap -c out.csv tests/funds.json
