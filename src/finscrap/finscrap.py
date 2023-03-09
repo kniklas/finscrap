@@ -8,6 +8,39 @@ import requests
 import bs4
 
 
+class GetData:
+    """Gets webscrapped data"""
+
+    def __init__(self, funds):
+        """Create objects to webscrap data."""
+        self.funds = funds
+        self.providers = list(funds.keys())
+        self.data_dict = {}
+        print("Initialize GetData")
+        print("Present providers:", self.providers)
+        if "analizy.pl" in self.providers:
+            self.analizy_obj = GetAssetAnalizy("analizy.pl", funds)
+            self.data_dict.update(self.analizy_obj.get_data())
+        if "biznesradar.pl" in self.providers:
+            self.biznesr_obj = GetAssetBiznesR("biznesradar.pl", funds)
+            self.data_dict.update(self.biznesr_obj.get_data())
+        if "borsa" in self.providers:
+            self.borsa_obj = GetAssetBorsa("borsa", funds)
+            self.data_dict.update(self.borsa_obj.get_data())
+        if "ishares" in self.providers:
+            self.ishares_obj = GetAssetIShares("ishares", funds)
+            self.data_dict.update(self.ishares_obj.get_data())
+        print(self.data_dict)
+
+    def out_csv(self, csv_path):
+        """Save result to CSV"""
+        print("Save results to CSV:", csv_path)
+
+    def out_dynamodb(self):
+        """Save result to DynamoDB"""
+        print("DynamoDB NOT IMPLEMENTED!")
+
+
 class GetAsset:
     """Generic class to get assets"""
 
@@ -74,7 +107,6 @@ class GetAsset:
                         {exception}"
                     )
                     price = None
-                print(f"{isin},{date},{price}")
             data[isin] = (date, price)
         return data
 

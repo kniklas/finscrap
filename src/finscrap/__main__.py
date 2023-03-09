@@ -16,18 +16,10 @@ def read_config(funds_json, csv):
     with open(funds_json, "r", encoding="utf-8") as fund_config:
         funds_urls = json.load(fund_config)
 
-    print("OUTPUT_CSV", csv)
-    analizy = finscrap.GetAssetAnalizy("analizy.pl", funds_urls)
-    analizy.get_data()
+    webscapper = finscrap.GetData(funds_urls)
 
-    #  biznesr = finscrap.GetAssetBiznesR("biznesradar.pl", funds_urls)
-    #  biznesr.get_data()
-
-    #  borsa = finscrap.GetAssetBorsa("borsa", funds_urls)
-    #  borsa.get_data()
-
-    #  ishares = finscrap.GetAssetIShares("ishares", funds_urls)
-    #  ishares.get_data()
+    if csv:
+        webscapper.out_csv(csv)
 
 
 if __name__ == "__main__":
