@@ -1,6 +1,5 @@
 """Loader and executor of finscrap module."""
 
-import json
 import click
 
 from finscrap import finscrap
@@ -13,10 +12,8 @@ def read_config(funds_json, csv):
     """Reads funds prices and valuation dates from defined URLs via FUNDS_JSON
     definition file.
     """
-    with open(funds_json, "r", encoding="utf-8") as fund_config:
-        funds_urls = json.load(fund_config)
-
-    webscapper = finscrap.GetData(funds_urls)
+    webscapper = finscrap.GetData(funds_json)
+    webscapper.get_data()
 
     if csv:
         webscapper.out_csv(csv)

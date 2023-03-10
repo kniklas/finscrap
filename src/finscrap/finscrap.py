@@ -1,5 +1,6 @@
 """Module webscraps financial data from web pages."""
 
+import json
 from urllib import request
 from urllib.error import HTTPError
 from urllib.error import URLError
@@ -11,34 +12,44 @@ import bs4
 class GetData:
     """Gets webscrapped data"""
 
-    def __init__(self, funds):
+    def __init__(self, funds_json):
         """Create objects to webscrap data."""
-        self.funds = funds
+        funds = self.load_funds_config(funds_json)
         self.providers = list(funds.keys())
         self.data_dict = {}
         print("Initialize GetData")
         print("Present providers:", self.providers)
         if "analizy.pl" in self.providers:
             self.analizy_obj = GetAssetAnalizy("analizy.pl", funds)
-            self.data_dict.update(self.analizy_obj.get_data())
         if "biznesradar.pl" in self.providers:
             self.biznesr_obj = GetAssetBiznesR("biznesradar.pl", funds)
-            self.data_dict.update(self.biznesr_obj.get_data())
         if "borsa" in self.providers:
             self.borsa_obj = GetAssetBorsa("borsa", funds)
-            self.data_dict.update(self.borsa_obj.get_data())
         if "ishares" in self.providers:
             self.ishares_obj = GetAssetIShares("ishares", funds)
+
+    @staticmethod
+    def load_funds_config(funds_json):
+        """Load from json file, funds config"""
+        with open(funds_json, "r", encoding="utf-8") as fund_config:
+            funds_urls = json.load(fund_config)
+        return funds_urls
+
+    def get_data(self):
+        """Get data for defined web pages"""
+        if "analizy.pl" in self.providers:
+            self.data_dict.update(self.analizy_obj.get_data())
+        if "biznesradar.pl" in self.providers:
+            self.data_dict.update(self.biznesr_obj.get_data())
+        if "borsa" in self.providers:
+            self.data_dict.update(self.borsa_obj.get_data())
+        if "ishares" in self.providers:
             self.data_dict.update(self.ishares_obj.get_data())
         print(self.data_dict)
 
     def out_csv(self, csv_path):
         """Save result to CSV"""
         print("Save results to CSV:", csv_path)
-
-    def out_dynamodb(self):
-        """Save result to DynamoDB"""
-        print("DynamoDB NOT IMPLEMENTED!")
 
 
 class GetAsset:

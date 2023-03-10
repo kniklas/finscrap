@@ -81,6 +81,11 @@ def fixture_ishares_web(test_data):
     yield ishares_web
 
 
+@pytest.fixture(name="data_wrapper")
+def fixture_data_wrapper(data_wrapper):
+    yield data_wrapper
+
+
 def test_borsa_date_conversion(borsa_web):
     input_date = "23/02/10"
     assert borsa_web.convert_date(input_date) == "2023-02-10"
