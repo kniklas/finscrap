@@ -82,8 +82,21 @@ def fixture_ishares_web(test_data):
 
 
 @pytest.fixture(name="data_wrapper")
-def fixture_data_wrapper(data_wrapper):
+def fixture_data_wrapper():
+    data_wrapper = finscrap.GetData(TEST_DATA)
     yield data_wrapper
+
+
+def test_dict_to_list_conversion(data_wrapper):
+    test_dict = {
+        "I01": ("2023-03-09", "97.27"),
+        "PLALIOR00169": ("2023-03-10", "101.73"),
+    }
+    result = [
+        ["I01", "2023-03-09", "97.27"],
+        ["PLALIOR00169", "2023-03-10", "101.73"],
+    ]
+    assert data_wrapper.dict_to_list(test_dict) == result
 
 
 def test_borsa_date_conversion(borsa_web):

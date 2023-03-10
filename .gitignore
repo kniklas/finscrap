@@ -1,6 +1,5 @@
-# PRV files
-funds_prv.py
-output.csv
+# CSV output files
+*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
