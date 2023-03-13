@@ -1,5 +1,6 @@
 """Module webscraps financial data from web pages."""
 
+import logging as log
 import json
 import csv
 from urllib import request
@@ -8,6 +9,8 @@ from urllib.error import URLError
 
 import requests
 import bs4
+
+# pylint: disable=logging-fstring-interpolation
 
 
 class GetData:
@@ -18,8 +21,9 @@ class GetData:
         funds = self.load_funds_config(funds_json)
         self.providers = list(funds.keys())
         self.data_dict = {}
-        print("Initialize GetData")
-        print("Present providers:", self.providers)
+        log.basicConfig(level=log.INFO)
+        log.info("Initialize GetData")
+        log.info(f"Present providers: {self.providers}")
         if "analizy.pl" in self.providers:
             self.analizy_obj = GetAssetAnalizy("analizy.pl", funds)
         if "biznesradar.pl" in self.providers:
@@ -64,7 +68,7 @@ class GetData:
 
     def out_csv(self, csv_path):
         """Save result to CSV"""
-        print("Save results to CSV:", csv_path)
+        log.info(f"Saving results to CSV: {csv_path}")
         data_set = self.dict_to_list(self.data_dict)
         #  print(data_set)
         with open(csv_path, "w", newline="", encoding="utf-8") as file:
@@ -78,7 +82,7 @@ class GetAsset:
     def __init__(self, site, funds):
         """Constructor to initialise site with URL address"""
         self.sel = funds[site]
-        print(f"Initialize: {site}")
+        log.info(f"Initialize: {site}")
 
     @staticmethod
     def concatenate_date(day, month, year):
@@ -139,6 +143,7 @@ class GetAsset:
                     )
                     price = None
             data[isin] = (date, price)
+            log.info(f"Retrieve: {isin} {date} {price}")
         return data
 
 
