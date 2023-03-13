@@ -1,5 +1,6 @@
 """Module webscraps financial data from web pages."""
 
+import logging as log
 import json
 import csv
 from urllib import request
@@ -8,6 +9,8 @@ from urllib.error import URLError
 
 import requests
 import bs4
+
+# pylint: disable=logging-fstring-interpolation
 
 
 class GetData:
@@ -18,8 +21,9 @@ class GetData:
         funds = self.load_funds_config(funds_json)
         self.providers = list(funds.keys())
         self.data_dict = {}
-        print("Initialize GetData")
-        print("Present providers:", self.providers)
+        log.basicConfig(level=log.INFO)
+        log.info("Initialize GetData")
+        log.info(f"Present providers: {self.providers}")
         if "analizy.pl" in self.providers:
             self.analizy_obj = GetAssetAnalizy("analizy.pl", funds)
         if "biznesradar.pl" in self.providers:
@@ -60,13 +64,11 @@ class GetData:
             self.data_dict.update(self.borsa_obj.get_data())
         if "ishares" in self.providers:
             self.data_dict.update(self.ishares_obj.get_data())
-        #  print(self.data_dict)
 
     def out_csv(self, csv_path):
         """Save result to CSV"""
-        print("Save results to CSV:", csv_path)
+        log.info(f"Saving results to CSV: {csv_path}")
         data_set = self.dict_to_list(self.data_dict)
-        #  print(data_set)
         with open(csv_path, "w", newline="", encoding="utf-8") as file:
             writer = csv.writer(file)
             writer.writerows(data_set)
@@ -78,7 +80,7 @@ class GetAsset:
     def __init__(self, site, funds):
         """Constructor to initialise site with URL address"""
         self.sel = funds[site]
-        print(f"Initialize: {site}")
+        log.info(f"Initialize: {site}")
 
     @staticmethod
     def concatenate_date(day, month, year):
@@ -106,15 +108,13 @@ class GetAsset:
                 request.urlopen(self.sel[isin])
             except HTTPError as exception:
                 # pylint: disable=used-before-assignment
-                print(
-                    f"{exception} | Verify if URL is correct: \
-                      {req.full_url}"
+                log.error(
+                    f"{exception} | URL: {req.full_url} might be incorrect!"
                 )
                 date, price = None, None
             except URLError as exception:
-                print(
-                    f"{exception} | Verify if domain name is correct: \
-                    {req.host}"
+                log.error(
+                    f"{exception} | Domain: {req.host} might be incorrect!"
                 )
                 date, price = None, None
             else:
@@ -124,21 +124,22 @@ class GetAsset:
                 try:
                     date = self.get_date(soup)
                 except (AttributeError, TypeError) as exception:
-                    print(
+                    log.error(
                         f"Cannot extract date from {req.full_url} - \
-                        {exception}"
+                          {exception}"
                     )
                     date = None
                 # Get price
                 try:
                     price = self.get_price(soup)
                 except (AttributeError, TypeError) as exception:
-                    print(
-                        f"Cannot extract price from: {req.full_url} - \
+                    log.error(
+                        f"Cannot extract price from {req.full_url} - \
                         {exception}"
                     )
                     price = None
             data[isin] = (date, price)
+            log.info(f"Retrieved: {isin} {date} {price}")
         return data
 
 
