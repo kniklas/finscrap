@@ -1,6 +1,12 @@
+# Build
 requests
 beautifulsoup4
 lxml
+click
+setuptools
+twine
+
+# Development
 flake8
 black
 pylint
@@ -9,8 +15,5 @@ pytest-watch
 pytest-mock
 pre-commit
 coverage
-setuptools
-twine
 yamllint
 coveralls
-click
