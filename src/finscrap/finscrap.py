@@ -64,13 +64,11 @@ class GetData:
             self.data_dict.update(self.borsa_obj.get_data())
         if "ishares" in self.providers:
             self.data_dict.update(self.ishares_obj.get_data())
-        #  print(self.data_dict)
 
     def out_csv(self, csv_path):
         """Save result to CSV"""
         log.info(f"Saving results to CSV: {csv_path}")
         data_set = self.dict_to_list(self.data_dict)
-        #  print(data_set)
         with open(csv_path, "w", newline="", encoding="utf-8") as file:
             writer = csv.writer(file)
             writer.writerows(data_set)
@@ -110,15 +108,13 @@ class GetAsset:
                 request.urlopen(self.sel[isin])
             except HTTPError as exception:
                 # pylint: disable=used-before-assignment
-                print(
-                    f"{exception} | Verify if URL is correct: \
-                      {req.full_url}"
+                log.error(
+                    f"{exception} | URL: {req.full_url} might be incorrect!"
                 )
                 date, price = None, None
             except URLError as exception:
-                print(
-                    f"{exception} | Verify if domain name is correct: \
-                    {req.host}"
+                log.error(
+                    f"{exception} | Domain: {req.host} might be incorrect!"
                 )
                 date, price = None, None
             else:
@@ -128,22 +124,22 @@ class GetAsset:
                 try:
                     date = self.get_date(soup)
                 except (AttributeError, TypeError) as exception:
-                    print(
+                    log.error(
                         f"Cannot extract date from {req.full_url} - \
-                        {exception}"
+                          {exception}"
                     )
                     date = None
                 # Get price
                 try:
                     price = self.get_price(soup)
                 except (AttributeError, TypeError) as exception:
-                    print(
-                        f"Cannot extract price from: {req.full_url} - \
+                    log.error(
+                        f"Cannot extract price from {req.full_url} - \
                         {exception}"
                     )
                     price = None
             data[isin] = (date, price)
-            log.info(f"Retrieve: {isin} {date} {price}")
+            log.info(f"Retrieved: {isin} {date} {price}")
         return data
 
 
