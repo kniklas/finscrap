@@ -3,6 +3,7 @@
 import logging as log
 import json
 import csv
+import time
 from urllib import request
 from urllib.error import HTTPError
 from urllib.error import URLError
@@ -100,6 +101,7 @@ class GetAsset:
         """Method returns data scrapped from web pages"""
         data = {}
         for isin in self.sel.keys():
+            start = time.time()
             try:
                 # Required to get URL or hostname in error handling
                 req = request.Request(self.sel[isin])
@@ -139,7 +141,8 @@ class GetAsset:
                     )
                     price = None
             data[isin] = (date, price)
-            log.info(f"Retrieved: {isin} {date} {price}")
+            total_time = time.time() - start
+            log.info(f"Retrieved: {isin} {date} {price} in {total_time:.2f}s")
         return data
 
 
