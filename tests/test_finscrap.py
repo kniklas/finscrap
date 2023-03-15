@@ -11,6 +11,9 @@ from urllib.error import URLError
 import pytest
 import requests
 import bs4
+import boto3
+
+from moto import mock_dynamodb
 
 # pylint: disable=import-error
 from finscrap import finscrap
@@ -81,13 +84,13 @@ def fixture_ishares_web(test_data):
     yield ishares_web
 
 
-@pytest.fixture(name="data_wrapper")
-def fixture_data_wrapper():
-    data_wrapper = finscrap.GetData(TEST_DATA)
-    yield data_wrapper
+@pytest.fixture(name="asset_wrapper")
+def fixture_asset_wrapper():
+    asset_wrapper = finscrap.AssetsWrapper(TEST_DATA)
+    yield asset_wrapper
 
 
-def test_dict_to_list_conversion(data_wrapper):
+def test_dict_to_list_conversion(asset_wrapper):
     test_dict = {
         "I01": ("2023-03-09", "97.27"),
         "PLALIOR00169": ("2023-03-10", "101.73"),
@@ -96,26 +99,26 @@ def test_dict_to_list_conversion(data_wrapper):
         ["I01", "2023-03-09", "97.27"],
         ["PLALIOR00169", "2023-03-10", "101.73"],
     ]
-    assert data_wrapper.dict_to_list(test_dict) == result
+    assert asset_wrapper.dict_to_list(test_dict) == result
 
 
-def test_data_wrapper_get_data(mocker, data_wrapper):
-    """Testing if GetData.get_data() method returns dictionary consiting set of
-    all providers dictionaries."""
+def test_asset_wrapper_get_data(mocker, asset_wrapper):
+    """Testing if AssetsWrapper.get_data() method returns dictionary consiting
+    set of all providers dictionaries."""
     mocker.patch.object(
-        data_wrapper.analizy_obj, "get_data", return_value={"01": "ALA"}
+        asset_wrapper.analizy_obj, "get_data", return_value={"01": "ALA"}
     )
     mocker.patch.object(
-        data_wrapper.biznesr_obj, "get_data", return_value={"02": "CAT"}
+        asset_wrapper.biznesr_obj, "get_data", return_value={"02": "CAT"}
     )
     mocker.patch.object(
-        data_wrapper.borsa_obj, "get_data", return_value={"03": "OLD"}
+        asset_wrapper.borsa_obj, "get_data", return_value={"03": "OLD"}
     )
     mocker.patch.object(
-        data_wrapper.ishares_obj, "get_data", return_value={"04": "KYC"}
+        asset_wrapper.ishares_obj, "get_data", return_value={"04": "KYC"}
     )
-    data_wrapper.get_data()
-    assert data_wrapper.data_dict == {
+    asset_wrapper.get_data()
+    assert asset_wrapper.data_dict == {
         "01": "ALA",
         "02": "CAT",
         "03": "OLD",
@@ -123,13 +126,29 @@ def test_data_wrapper_get_data(mocker, data_wrapper):
     }
 
 
-def test_data_wrapper_csv_saving(mocker, data_wrapper):
+def test_asset_wrapper_csv_saving(mocker, asset_wrapper):
     mocked_data = mocker.mock_open(read_data="")
     mocked_file = mocker.patch("builtins.open", mocked_data)
-    data_wrapper.out_csv("file.csv")
+    asset_wrapper.out_csv("file.csv")
     mocked_file.assert_called_with(
         "file.csv", "w", newline="", encoding="utf-8"
     )
+
+
+@mock_dynamodb
+def test_asset_wrapper_db_saving(asset_wrapper):
+    # Initialize some data to be tested against DynamoDB retrieval logic
+    asset_wrapper.data_dict = {"I01": ("2022-02-02", "23.2")}
+    dynamo_db = boto3.resource("dynamodb")
+    dynamo_db.create_table(
+        TableName="Asset2",
+        KeySchema=[{"AttributeName": "AssetID", "KeyType": "HASH"}],
+        AttributeDefinitions=[
+            {"AttributeName": "AssetID", "AttributeType": "S"}
+        ],
+        BillingMode="PAY_PER_REQUEST",
+    )
+    asset_wrapper.out_dynamodb("Asset2")
 
 
 def test_borsa_date_conversion(borsa_web):
