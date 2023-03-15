@@ -46,3 +46,7 @@ e2e:
 e2e-csv:
 	python -m finscrap -c out.csv tests/funds-short.json
 	cat out.csv
+
+# use Asssets2 table for testing of DynamoDB
+e2e-dynamo:
+	python -m finscrap -d Assets2 tests/funds-short.json

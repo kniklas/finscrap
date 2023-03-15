@@ -8,13 +8,15 @@ from urllib import request
 from urllib.error import HTTPError
 from urllib.error import URLError
 
+import boto3
+from botocore.exceptions import ClientError
 import requests
 import bs4
 
 # pylint: disable=logging-fstring-interpolation
 
 
-class GetData:
+class AssetsWrapper:
     """Gets webscrapped data"""
 
     def __init__(self, funds_json):
@@ -22,8 +24,9 @@ class GetData:
         funds = self.load_funds_config(funds_json)
         self.providers = list(funds.keys())
         self.data_dict = {}
+        self.data_set = []
         log.basicConfig(level=log.INFO)
-        log.info("Initialize GetData")
+        log.info("Initialize AssetsWrapper")
         log.info(f"Present providers: {self.providers}")
         if "analizy.pl" in self.providers:
             self.analizy_obj = GetAssetAnalizy("analizy.pl", funds)
@@ -65,14 +68,49 @@ class GetData:
             self.data_dict.update(self.borsa_obj.get_data())
         if "ishares" in self.providers:
             self.data_dict.update(self.ishares_obj.get_data())
+        self.data_set = self.dict_to_list(self.data_dict)
 
     def out_csv(self, csv_path):
         """Save result to CSV"""
         log.info(f"Saving results to CSV: {csv_path}")
-        data_set = self.dict_to_list(self.data_dict)
         with open(csv_path, "w", newline="", encoding="utf-8") as file:
             writer = csv.writer(file)
-            writer.writerows(data_set)
+            writer.writerows(self.data_set)
+
+    def out_dynamodb(self, db_table):
+        """Save Results to DynamoDB table"""
+        # Open connection to DynamoDB table
+        dynamo_db = None
+        try:
+            log.info(f"Initialize connection to DynamoDB table: {db_table}")
+            dynamo_db = boto3.resource("dynamodb").Table(db_table)
+            dynamo_db.load()
+        except ClientError as err:
+            dynamo_db = None
+            log.error(err)
+
+        # Store data in database
+        if dynamo_db:
+            log.info("Saving scrapped data to DynamoDB table")
+            for i in self.data_dict.items():
+                try:
+                    asset_id = i[0]
+                    price_date = i[1][0]
+                    asset_price = i[1][1]
+                    dynamo_db.put_item(
+                        Item={
+                            "AssetID": asset_id,
+                            "PriceDate": price_date,
+                            "AssetPrice": asset_price,
+                        }
+                    )
+                    log.info(
+                        f"Save to DB: {asset_id}, {price_date}, {asset_price}"
+                    )
+                except ClientError as err:
+                    log.error(err)
+        else:
+            log.info("Skipped saving to DynamodB")
 
 
 class GetAsset:

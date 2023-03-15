@@ -22,7 +22,20 @@ Redirect output to csv file:
 
 Note: `--csv` option has shorter equivalent: `-c`
 
+Redirect output to DynamoDB table called: _Table1_:
+
+`python3 -m finscrap --dynamodb Table1 funds.json`
+
+Note: `--dynamodb` option has shorter equivalent: `-d`. Make sure your runtime
+environment has correct [AWS credentials
+configuration](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
+
 To get more help use: `python3 -m finscrap --help`
+
+## Working with DynamoDB
+
+When working on this project, you can look at `examples` folder to create
+example DynamoDB table, put or get sample data.
 
 
 # Contributing
