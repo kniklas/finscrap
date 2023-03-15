@@ -8,7 +8,7 @@ setup:
 
 lint:
 	@echo "Starting lint"
-	find . -name "*.yml" | xargs python -m yamllint
+	find . -name "*.yml" -o -name "*.yaml" | xargs python -m yamllint
 	find . -name "*.py" -not -path "./build/*" \
 		| xargs python -m black --check --verbose
 	find . -name "*.py" -not -path "./build/*" \
