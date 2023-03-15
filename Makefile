@@ -10,7 +10,7 @@ lint:
 	@echo "Starting lint"
 	find . -name "*.yml" -o -name "*.yaml" | xargs python -m yamllint
 	find . -name "*.py" -not -path "./build/*" \
-		| xargs python -m black --check --verbose
+		| xargs python -m black -l 79 --check --verbose
 	find . -name "*.py" -not -path "./build/*" \
 		| xargs python -m pylint
 	@echo "Completed lint"
