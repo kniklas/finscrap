@@ -44,4 +44,5 @@ e2e:
 	python -m finscrap tests/funds.json
 
 e2e-csv:
-	python -m finscrap -c out.csv tests/funds.json
+	python -m finscrap -c out.csv tests/funds-short.json
+	cat out.csv
