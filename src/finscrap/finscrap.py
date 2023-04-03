@@ -25,7 +25,9 @@ class AssetsWrapper:
         self.providers = list(funds.keys())
         self.data_dict = {}
         self.data_set = []
-        log.basicConfig(level=log.INFO)
+        log.basicConfig(
+            level=log.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+        )
         log.info("Initialize AssetsWrapper")
         log.info(f"Present providers: {self.providers}")
         if "analizy.pl" in self.providers:
