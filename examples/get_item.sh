@@ -1,5 +1,3 @@
-export AWS_PROFILE=kamil-adm
-
 aws dynamodb get-item \
 	--table-name Assets2 \
 	--key '{"AssetID": {"S": "PL00002"}, "PriceDate": {"S": "2023-01-02"}}' \

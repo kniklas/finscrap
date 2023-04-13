@@ -36,7 +36,7 @@ setuptools.setup(
     package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
-    install_requires=["requests", "bs4"],
+    install_requires=["requests", "bs4", "urllib3<2", "lxml"],
     setup_requires=["setuptools", "wheel"],
     project_urls={
         "Issue tracker": "https://github.com/kniklas/finscrap/issues",

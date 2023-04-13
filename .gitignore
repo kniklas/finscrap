@@ -1,5 +1,11 @@
+# Ignore example packages
+examples/packages/*
+
 # CSV output files
 *.csv
+
+# ZIP package files
+*.zip
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
