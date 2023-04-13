@@ -1,5 +1,4 @@
 [MAIN]
-ignore-patterns=funds_prv.py
 ignore-paths=^build/lib/finscrap/.*$
 
 [FORMAT]

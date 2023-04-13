@@ -1,6 +1,4 @@
-export AWS_PROFILE=kamil-adm
-
-aws dynamodb create-table --table-name Assets2 --attribute-definitions \
+aws dynamodb create-table --table-name Assets1 --attribute-definitions \
 	AttributeName=AssetID,AttributeType=S \
 	AttributeName=PriceDate,AttributeType=S \
 	--billing-mode PAY_PER_REQUEST \
