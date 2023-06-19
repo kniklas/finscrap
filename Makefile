@@ -3,7 +3,8 @@ all: setup lint test clean
 setup:
 	@echo "Starting build setup"
 	python -m pip install --upgrade pip
-	if [ -f requirements-build.txt ]; then pip install -r requirements-build.txt; fi
+	if [ -f requirements-build.txt ]; \
+		then pip install -r requirements-build.txt; fi
 	@echo "Completed setup"
 
 setup-dev:
@@ -16,10 +17,10 @@ lint:
 	@echo "Starting lint"
 	find . -name "*.yml" -o -name "*.yaml" | xargs python -m yamllint
 	find . -name "*.py" -not -path "./build/*" \
-		-not -path "./examples/pack*" \
+		-not -path "./examples/zip*" \
 		| xargs python -m black -l 79 --check --verbose
 	find . -name "*.py" -not -path "./build/*" \
-		-not -path "./examples/pack*" \
+		-not -path "./examples/zip*" \
 		| xargs python -m pylint
 	@echo "Completed lint"
 

@@ -1,12 +1,16 @@
 # pylint: disable=invalid-name
 """Example lambda function"""
 
+import sys
 from finscrap import finscrap
 
 
 # pylint: disable=unused-argument
 def lambda_handler(event, context):
     """Lambda handler"""
+
+    search_path = sys.path
+    print(search_path)
 
     FUNDS_JSON = "funds-short.json"
     DYNAMO_DB = "Assets2"
