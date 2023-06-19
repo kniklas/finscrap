@@ -1,5 +1,5 @@
 # Ignore example packages
-examples/packages/*
+examples/zip_packages/*
 
 # CSV output files
 *.csv
@@ -142,3 +142,9 @@ dmypy.json
 
 # DS_Store
 .DS_Store
+
+# response.json (of working lambda)
+response.json
+
+# specific funds file
+funds_prv.json
