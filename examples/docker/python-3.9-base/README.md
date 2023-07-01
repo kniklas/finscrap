@@ -1,35 +1,13 @@
-# Docker building steps
+# Base docker image
 
-## Pre-conditions
+Purpose of this docker image is to install python dependencies required by lambda function. This includes `finscrap` python package.
 
-- Make sure correct environmet variables exist:
-`export AWS_DEFAULT_REGION=`
-`export AWS_ACCOUNT=`
+# Important
 
-- ECR repository exists `fin-scrap-base` in correct region.
-```shell
-aws ecr create-repository \
-    --repository-name fin-scrap-base \
-    --image-scanning-configuration scanOnPush=true \
-    --image-tag-mutability MUTABLE
-```
+Make sure python dependencies conflicts are resolved - see [../README.md](../README.md) for example command. Resolved dependencies are stored in `requirements.txt` file.
 
-- Python dependencies are resolved:
-```shell
-pip-compile --extra-index-url=https://test.pypi.org/simple/ \
-    --output-file=requirements.txt \
-    requirements-test.txt ../../../requirements-build.txt
-```
+Pay attention to versioning, each time any layer changes in this docker image, `version.txt` file must be updated with new version.
 
-## Building process
+# Using the image
 
-Build image:
-`docker build -t python-3.9-base:test .`
-
-If necessary tag image to destination repository:
-`docker tag python-3.9-base:test $AWS_ACCOUNT.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/fin-scrap-base:latest`
-
-Push image:
-`docker push $AWS_ACCOUNT.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/fin-scrap-base:latest`
-
-Make sure that Dockerfile which is using this base image has correct URI.
+See instructions in [../README.md](../README.md)
