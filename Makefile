@@ -17,10 +17,8 @@ lint:
 	@echo "Starting lint"
 	find . -name "*.yml" -o -name "*.yaml" | xargs python -m yamllint
 	find . -name "*.py" -not -path "./build/*" \
-		-not -path "./examples/zip*" \
 		| xargs python -m black -l 79 --check --verbose
 	find . -name "*.py" -not -path "./build/*" \
-		-not -path "./examples/zip*" \
 		| xargs python -m pylint
 	@echo "Completed lint"
 
@@ -39,15 +37,9 @@ build: clean
 pypi-test: build
 	twine upload -r testpypi --config-file ~/.finpypirc --skip-existing ./dist/*
 
-create-lambda:
-	cd examples
-	aws lambda create-function --function-name get-data --zip-file fileb://pack.zip --runtime python3.9 --handler get_data.lambda_handler --role arn:aws:iam::$(AWS_ACCOUNT):role/lambda-apigateway-role
-
 clean:
 	@echo "Starting clean"
-	rm -rvf dist build  .pytest_cache examples/package
-	rm -rvf examples/packages/*
-	rm -vf examples/packages.zip
+	rm -rvf dist build  .pytest_cache
 	find . -type d -name __pycache__ -exec rm -r {} \+
 	find . -type d -name finscrap.egg-info -exec rm -r {} \+
 	@echo "Completed clean"
@@ -65,9 +57,3 @@ e2e-csv:
 # use Asssets2 table for testing of DynamoDB
 e2e-dynamo:
 	python -m finscrap -d Assets2 tests/funds-short.json
-
-update-lambda: build
-	pip install --target ./examples/packages dist/finscrap-0.0.dev8.tar.gz
-	cd examples/packages && zip -r ../packages.zip .
-	cd examples && zip -g packages.zip get_data.py funds-short.json
-	cd examples && aws lambda update-function-code --function-name get-data --zip-file fileb://packages.zip

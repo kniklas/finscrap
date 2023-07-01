@@ -53,27 +53,7 @@ Run `pre-commit install` initially!
 
 ## Deploy lambda package
 
-**Note**: move it later to CONTRIB.md or AWS examples documentation.
+Review examples folder with docker lambda and dependencies implementation.
 
-**Note**: set correct environment variable `AWS_ACCOUNT`, so other shell
-scripts (incl. `Makefile`) can work with correct AWS account.
-
-**Note**: make sure to configure correct AWS profile to have sufficient
-permissions to operate on your AWS account.
-
-Read very carefully these
-[instructions](https://docs.aws.amazon.com/lambda/latest/dg/python-package.html)
-
-Steps:
-1. Build python package using `make clean && make build`
-1.1. Go to examples folder, create `package` folder
-2. Build dependencies in package folder: `pip install --target ./package -r ../requirements-dev.txt`
-2.0. Add finscap package: `pip install --target ./package
-../dist/finscrap-0.0.dev8.tar.gz`
-2.1. Add finscrap package to package folder: `pip install --target ./package -i https://test.pypi.org/simple/ finscrap==0.0.dev`
-3. Zip dependencies using: `zip -r package pack.zip`
-4. Add to zip lambda file, e.g.: `zip pack.zip lambda.py`
-5. Create lambda function, note account number is replaced with XXXXXX: `aws lambda create-function --function-name get-data --zip-file fileb://pack.zip --runtime python3.9 --handler get-data.handler --role arn:aws:iam::XXXXXXXXXXXX:role/lambda-apigateway-role\`
-6. Clean-up `./package` folder (TODO: add to `make clean`)
-?: How to update lambda file and package from UI/CLI?
-?. Build dependencies package using: `pip install --target ./package ../dist/finscrap-0.0.dev8.tar.gz`
+TODO: consider moving lambda example implementation and AWS infrastructure
+deployment to separate repository.
