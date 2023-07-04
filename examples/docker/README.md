@@ -34,10 +34,28 @@ To work with AWS resources from command line, [AWS CLI must be installed](https:
 
 Make sure the table(s) exist, see DynamoDB folder for examples how DynamoDB tables can be created and used from command line.
 
-#### Lambda Role
+*Note*: index might need to be created to allow API Gateway access (**TBD**).
+
+#### Lambda IAM Role
 
 Correct IAM Role must be created for lambda function, so it can access other AWS resources.
 See: [Tutorial: Using Lambda with API Gateway](https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway-tutorial.html#services-apigateway-tutorial-role)
+
+To enable access of API Gateway to DynamoDB, add to `Trust relationships`, following:
+```json
+            "Sid": "Statement1",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "apigateway.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+```
+
+#### API Gateway
+
+Created on base of [these guidelines](https://aws.amazon.com/blogs/compute/using-amazon-api-gateway-as-a-proxy-for-dynamodb/)
+1. Create API (REST)
+2.
 
 #### ECR Repository
 
