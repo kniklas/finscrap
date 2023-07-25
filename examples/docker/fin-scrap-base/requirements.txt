@@ -22,7 +22,7 @@ botocore==1.29.158
     #   s3transfer
 bs4==0.0.1
     # via finscrap
-certifi==2023.5.7
+certifi==2023.7.22
     # via requests
 charset-normalizer==3.1.0
     # via requests
