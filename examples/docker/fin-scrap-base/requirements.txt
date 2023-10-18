@@ -88,7 +88,7 @@ soupsieve==2.4.1
     # via beautifulsoup4
 twine==4.0.2
     # via -r requirements.txt
-urllib3==1.26.16
+urllib3==1.26.18
     # via
     #   -r requirements.txt
     #   botocore
